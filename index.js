@@ -10,3 +10,8 @@ server(config, logger)
 .listen(config.http.port, () => {
     logger.info('Server is listening %s', config.http.port);
 });
+
+process.on('uncaughtException', (err) => {
+    logger.error(err.message, err.stack);
+    process.exit(1);
+});
