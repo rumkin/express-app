@@ -2,8 +2,10 @@
 
 const {Router} = require('express');
 
-module.exports = function(app, controller) {
+module.exports = function(app) {
+    const controller = app.greetCtrl;
     const router = Router();
+    
     
     router.get('/hello', controller.hello.bind(controller));
     

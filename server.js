@@ -10,15 +10,10 @@ const mongoose = require('./modules/mongoose.js');
 function server(config, logger) {
     const store = new Store();
     
-    store.set('config', config);
-    store.set('logger', logger);
+    store.config = config;
+    store.logger = logger;
     
     let services_ = {};
-    
-    _.forOwn(controllers, (controller, name) => {
-        store.set(name + 'Ctrl', new controller(store));
-        logger.debug('Init "%s" controller', name);
-    });
     
     _.forOwn(models, (model, name) => {
         store.set(name, model);
@@ -29,8 +24,8 @@ function server(config, logger) {
         services_[name] = store.set(name + 'Srv', new service(store));
     });
     
-    store.set('services', services_);
-    store.set('models', models);
+    store.services = services_;
+    store.models = models;
     
     mongoose(config.mongoose)
     .then(() => {
@@ -39,6 +34,11 @@ function server(config, logger) {
     .catch((err) => {
         logger.error(err);
         process.exit(1);
+    });
+    
+    _.forOwn(controllers, (controller, name) => {
+        store.set(name + 'Ctrl', new controller(store));
+        logger.debug('Init "%s" controller', name);
     });
     
     const app = express();
@@ -51,8 +51,8 @@ function server(config, logger) {
     // API Controllers
     
     _.forOwn(routes, (fn, key) => {
-        router.use('/' + key, fn(store, store.get(key + 'Ctrl')));
-        logger.debug('Init "%s" controller router', key);
+        router.use(fn(store));
+        logger.debug('Init "%s" router', key);
     });
     
     router.use((err, req, res, next) => {
