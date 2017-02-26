@@ -1,13 +1,22 @@
 'use strict';
 
-const config = require('./config.js');
 const Logger = require('./lib/logger.js');
-const server = require('./server.js');
+const Store = require('./lib/store.js');
+const baseApp = require('./app.js');
+const serverApp = require('./server.js');
+
+const config = require('./config.js');
 
 const logger = new Logger(config.logger);
+const app = new Store();
 
-server(config, logger)
-.listen(config.http.port, () => {
+app.config = config;
+app.logger = logger;
+
+app.use(baseApp);
+app.use(serverApp);
+
+app.server.start(config.http.port, () => {
     logger.info('Server is listening %s', config.http.port);
 });
 
