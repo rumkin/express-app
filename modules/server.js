@@ -32,6 +32,7 @@ module.exports = function(options = {}) {
                 let count;
                 if (typeof arguments[arguments.length - 1] === 'function') {
                     count = arguments.length - 1;
+                    fn = arguments[count];
                 }
                 else {
                     count = arguments.length;
