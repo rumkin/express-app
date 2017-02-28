@@ -53,5 +53,7 @@ module.exports = function(options = {}) {
                 });
             }
         });
+        
+        app.server.use(router);
     };
 };
