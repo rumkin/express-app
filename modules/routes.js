@@ -17,24 +17,26 @@ module.exports = function(options = {}) {
             router.use(fn(app));
         });
         
-        router.use((err, req, res, next) => {
+        router.use((error, req, res, next) => {
             // Process error
-            if (err) {
+            if (error) {
                 req.format({
                     json() {
+                        // TODO send error in dev mode
                         res.status(500).json({
                             error: {
-                                code: 'e_unknown',
-                                message: err.message,
+                                code: 'unknown',
+                                message: error.message,
+                                details: {},
                             }
                         });
                     },
                     other() {
-                        res.status(500).send('Server error:\n' + err.stack);
+                        res.status(500).send('Server error:\n' + error.stack);
                     },
                 });
                 
-                logger.error(err);
+                logger.error(error);
             }
             else {
                 // Nothing found...
@@ -42,8 +44,11 @@ module.exports = function(options = {}) {
                     json() {
                         res.status(404).json({
                             error: {
-                                code: 'e_not_found',
+                                code: 'not_found',
                                 message: 'Nothing found',
+                                details: {
+                                    url: req.url,
+                                },
                             }
                         });
                     },
