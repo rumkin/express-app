@@ -10,6 +10,7 @@
   "dependencies": {
     "body-parser": "^1.16.1",
     "chalk": "^1.1.3",
+    "error3": "^1.0.1",
     "express": "^4.14.1",
     "function-arguments": "^1.0.8",
     "jade": "^1.11.0",
