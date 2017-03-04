@@ -4,11 +4,11 @@ const BaseController = require('./base-controller.js');
 
 class GreetController extends BaseController {
     pass(req, res) {
-        console.log('Pass');
+        this.app.logger.debug('Pass');
     }
     
     hello(req, res) {
-        console.log('Greet middleware');
+        this.app.logger.debug('Greet middleware');
         res.render('index.jade');
     }
 }
